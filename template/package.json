@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.4",
     "@vueuse/core": "^11.0.3",
+    "lodash-es": "^4.17.21",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.2",
     "vue": "latest"
   }
 }

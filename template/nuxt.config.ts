@@ -2,5 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss']
+  hooks: {
+    "pages:extend"(routes) {
+      routes.push({
+        path: "/:location/:title/:guid/job/",
+        file: "~/pages/job.vue",
+      })
+    }
+  },
+  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt']
 })

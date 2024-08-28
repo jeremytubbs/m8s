@@ -19,6 +19,7 @@
         class="absolute inset-y-0 right-0 pr-3 flex items-center"
         @click="clearInput"
       >
+        X
         <!-- <IconX class="h-5 w-5 text-gray-400" /> -->
       </button>
       <ul

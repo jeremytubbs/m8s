@@ -1,19 +1,30 @@
 <template>
-    <main id="main">
-        <Head>
-            <Title>Home</Title>
-        </Head>
-        <JobSearchForm @search="performSearch" />
-    </main>
+    <div>
+      <div v-if="jobSearchStore.results && jobSearchStore.results.length > 0">
+        <!-- Display your search results here -->
+        <div v-for="job in jobSearchStore.results" :key="job.guid">
+            <nuxt-link
+                :to="`${buildJobDetailUrl(job)}`"
+            >
+                {{ job.title_exact }}
+            </nuxt-link>
+        </div>
+      </div>
+      <div v-else-if="searched">
+        No results found.
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-// import { useQuery } from
-// const { q, location } = useQuery()
-// let searchParams = { q, location }
+  import { ref, watch } from 'vue'
+  import { useJobSearchStore } from '~/stores/jobSearchStore'
+  import buildJobDetailUrl from '~/support/buildJobDetailUrl'
 
-function performSearch(searchParams: { q: string, location: string }) {
-  // Perform the actual search here, e.g., navigate to search results page or fetch results
-  console.log('Searching with params:', searchParams)
-}
+  const jobSearchStore = useJobSearchStore()
+  const searched = ref(false)
+
+  watch(() => jobSearchStore.results, () => {
+    searched.value = true
+  })
 </script>

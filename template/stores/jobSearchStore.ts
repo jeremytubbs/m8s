@@ -8,6 +8,7 @@ interface JobSearchState {
   hasPerformedInitialSearch: boolean
   page: number
   totalPages: number
+  isLoading: boolean
 }
 
 export const useJobSearchStore = defineStore('jobSearch', {
@@ -18,7 +19,8 @@ export const useJobSearchStore = defineStore('jobSearch', {
     initialAllResults: [],
     hasPerformedInitialSearch: false,
     page: 1,
-    totalPages: 1
+    totalPages: 1,
+    isLoading: false
   }),
   actions: {
     setSearchParams(q: string, location: string) {
@@ -36,7 +38,12 @@ export const useJobSearchStore = defineStore('jobSearch', {
       }
     },
     async performSearch(forceSearch: boolean = false) {
-        if (this.q === '' && this.location === '' && this.hasPerformedInitialSearch) {
+      if (this.isLoading && this.hasPerformedInitialSearch) return
+
+      this.isLoading = true
+
+      try {
+        if (this.q === '' && this.location === '' && this.hasPerformedInitialSearch && !forceSearch) {
           this.results = this.initialAllResults
           return
         }
@@ -46,21 +53,21 @@ export const useJobSearchStore = defineStore('jobSearch', {
           return
         }
 
-        // Implement your search logic here
         const response = await fetch(`https://prod-search-api.jobsyn.org/api/v1/solr/search?q=${this.q}&location=${this.location}&page=${this.page}&num_items=10`, {
-              method: 'GET',
-              headers: {
-                "Accept": "application/json",
-                'Content-Type': 'application/json',
-                'X-ORIGIN': 'production--openresty-dejobs-org.microsites.recruitrooster.com'
-              }
-            })
+          method: 'GET',
+          headers: {
+            "Accept": "application/json",
+            'Content-Type': 'application/json',
+            'X-ORIGIN': 'production--openresty-dejobs-org.microsites.recruitrooster.com'
+          }
+        })
         const data = await response.json()
 
         if (this.page === 1) {
           this.setResults(data.jobs, data.pagination.total_pages)
         } else {
           this.results = [...this.results, ...data.jobs]
+          // this.totalPages = data.pagination.total_pages
         }
 
         // If this was an "all jobs" search, save the results and mark that we've performed the initial search
@@ -68,10 +75,20 @@ export const useJobSearchStore = defineStore('jobSearch', {
           this.initialAllResults = this.results
           this.hasPerformedInitialSearch = true
         }
+      } catch (error) {
+        console.error('Error performing search:', error)
+      } finally {
+        this.isLoading = false
+      }
     },
     async loadMore() {
       this.incrementPage()
+      const currentResultsCount = this.results.length
       await this.performSearch(true)
+      if (this.results.length > currentResultsCount) {
+        return this.results[currentResultsCount].guid
+      }
+      return null
     }
   }
 })

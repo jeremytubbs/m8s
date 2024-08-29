@@ -9,7 +9,7 @@
             v-model="searchQuery"
             :fetch-suggestions="fetchTitleSuggestions"
             placeholder="Job title or keywords"
-            @clear="clearSearchQuery"
+            @clear="clearSearch"
           />
         </div>
         <div class="flex-1">
@@ -101,21 +101,15 @@
     })
   }
 
-  function clearSearchQuery() {
-  searchQuery.value = ''
-  if (locationQuery.value === '') {
-    jobSearchStore.clearSearch()
+  function clearSearch() {
+    searchQuery.value = ''
     updateRoute()
   }
-}
 
-function clearLocation() {
-  locationQuery.value = ''
-  if (searchQuery.value === '') {
-    jobSearchStore.clearSearch()
+  function clearLocation() {
+    locationQuery.value = ''
     updateRoute()
   }
-}
 
   function useCurrentLocation() {
     if (coords.value) {

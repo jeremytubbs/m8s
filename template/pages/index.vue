@@ -22,6 +22,9 @@
       <div v-else-if="searched">
         No results found.
       </div>
+      <div v-else>
+        Loading...
+      </div>
     </div>
 </template>
 

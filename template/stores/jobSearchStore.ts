@@ -9,6 +9,7 @@ interface JobSearchState {
   page: number
   totalPages: number
   isLoading: boolean
+  lastClickedJobGuid: string | null
 }
 
 export const useJobSearchStore = defineStore('jobSearch', {
@@ -20,7 +21,8 @@ export const useJobSearchStore = defineStore('jobSearch', {
     hasPerformedInitialSearch: false,
     page: 1,
     totalPages: 1,
-    isLoading: false
+    isLoading: false,
+    lastClickedJobGuid: null
   }),
   actions: {
     setSearchParams(q: string, location: string) {
@@ -89,6 +91,12 @@ export const useJobSearchStore = defineStore('jobSearch', {
         return this.results[currentResultsCount].guid
       }
       return null
+    },
+    setLastClickedJobGuid(guid: string) {
+      this.lastClickedJobGuid = guid
+    },
+    clearLastClickedJobGuid() {
+      this.lastClickedJobGuid = null
     }
   }
 })

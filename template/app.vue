@@ -1,12 +1,12 @@
 <template>
-  <NuxtLayout>
-      <NuxtPage />
-  </NuxtLayout>
+    <NuxtLayout>
+        <NuxtPage />
+    </NuxtLayout>
 </template>
 
 <script setup>
 const {company} = useAppConfig()
 useHead({
-  titleTemplate: "%s | " + company,
+    titleTemplate: "%s | " + company,
 })
 </script>

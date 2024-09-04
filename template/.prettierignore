@@ -1,0 +1,9 @@
+# Ignore these folders/files:
+dist
+.build
+.nuxt
+.github
+.output
+.microsites
+package.json
+package-lock.json

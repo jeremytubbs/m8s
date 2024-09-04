@@ -82,6 +82,7 @@ watch(
 )
 
 onMounted(() => {
+    jobSearchStore.performSearch()
     restoreFocus()
 })
 </script>

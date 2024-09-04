@@ -1,10 +1,21 @@
 import {defineStore} from "pinia"
 
+interface FilterItem {
+    display: string
+    link: string
+    value: number
+}
+
+interface Filters {
+    [key: string]: FilterItem[]
+}
 interface JobSearchState {
     q: string
     location: string
     results: any[]
+    filters: Filters
     initialAllResults: any[]
+    initialAllTotalPages: number
     hasPerformedInitialSearch: boolean
     page: number
     totalPages: number
@@ -17,7 +28,9 @@ export const useJobSearchStore = defineStore("jobSearch", {
         q: "",
         location: "",
         results: [],
+        filters: {},
         initialAllResults: [],
+        initialAllTotalPages: 1,
         hasPerformedInitialSearch: false,
         page: 1,
         totalPages: 1,
@@ -32,10 +45,9 @@ export const useJobSearchStore = defineStore("jobSearch", {
             this.q = q
             this.location = location
         },
-        setResults(results: any[], totalPages: number) {
-            // Replace 'any' with a more specific type
-            this.results = results
-            this.totalPages = totalPages
+        setResults(results: any[]) {
+            this.results = results.jobs
+            this.totalPages = results.pagination.total_pages
         },
         incrementPage() {
             if (this.page < this.totalPages) {
@@ -51,15 +63,17 @@ export const useJobSearchStore = defineStore("jobSearch", {
                 if (
                     this.q === "" &&
                     this.location === "" &&
-                    this.hasPerformedInitialSearch &&
+                    this.page === 1 &&
+                    this.initialAllResults.length > 0 &&
                     !forceSearch
                 ) {
                     this.results = this.initialAllResults
+                    this.totalPages = this.initialAllTotalPages
                     return
                 }
 
                 // If search params haven't changed and it's not a forced search, don't perform a new search
-                if (!forceSearch && this.page === 1 && this.results.length > 0) {
+                if (!forceSearch && this.page >= 1 && this.results.length > 0) {
                     return
                 }
 
@@ -78,15 +92,16 @@ export const useJobSearchStore = defineStore("jobSearch", {
                 const data = await response.json()
 
                 if (this.page === 1) {
-                    this.setResults(data.jobs, data.pagination.total_pages)
+                    this.setResults(data)
                 } else {
                     this.results = [...this.results, ...data.jobs]
                     // this.totalPages = data.pagination.total_pages
                 }
 
                 // If this was an "all jobs" search, save the results and mark that we've performed the initial search
-                if (this.q === "" && this.location === "") {
+                if (this.q === "" && this.location === "" && !this.hasPerformedInitialSearch) {
                     this.initialAllResults = this.results
+                    this.initialAllTotalPages = this.totalPages
                     this.hasPerformedInitialSearch = true
                 }
             } catch (error) {

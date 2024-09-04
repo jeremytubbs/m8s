@@ -111,14 +111,14 @@ function updateRoute() {
 function clearSearch() {
     searchQuery.value = ""
     jobSearchStore.setSearchParams("", locationQuery.value)
-    jobSearchStore.performSearch(true)
+    jobSearchStore.performSearch()
     updateRoute()
 }
 
 function clearLocation() {
     locationQuery.value = ""
     jobSearchStore.setSearchParams(searchQuery.value, "")
-    jobSearchStore.performSearch(true)
+    jobSearchStore.performSearch()
     updateRoute()
 }
 

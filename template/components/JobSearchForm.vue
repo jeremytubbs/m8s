@@ -131,7 +131,6 @@ function useCurrentLocation() {
     }
 }
 
-// Watch for route changes and perform search
 watch(
     () => route.query,
     (newQuery) => {
@@ -142,22 +141,8 @@ watch(
             searchQuery.value = newQ
             locationQuery.value = newLocation
             jobSearchStore.setSearchParams(newQ, newLocation)
-            // Remove the immediate search here
         }
     },
     {immediate: true}
 )
-
-// Perform search on page load
-onMounted(() => {
-    if (process.client) {
-        const newQ = typeof route.query.q === "string" ? route.query.q : ""
-        const newLocation = typeof route.query.location === "string" ? route.query.location : ""
-
-        if (jobSearchStore.results.length === 0) {
-            jobSearchStore.setSearchParams(newQ, newLocation)
-            jobSearchStore.performSearch()
-        }
-    }
-})
 </script>

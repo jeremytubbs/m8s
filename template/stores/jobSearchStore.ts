@@ -60,12 +60,17 @@ export const useJobSearchStore = defineStore("jobSearch", {
                     this.initialAllResults?.jobs?.length > 0 &&
                     !forceSearch
                 ) {
-                    this.results = this.initialAllResults
+                    this.results = {...this.initialAllResults}
                     return
                 }
 
                 // If search params haven't changed and it's not a forced search, don't perform a new search
-                if (this.hasPerformedInitialSearch && !forceSearch && this.page >= 1 && this.results?.jobs?.length > 0) {
+                if (
+                    this.hasPerformedInitialSearch &&
+                    !forceSearch &&
+                    this.page >= 1 &&
+                    this.results?.jobs?.length > 0
+                ) {
                     return
                 }
 

@@ -12,7 +12,10 @@
                 </nuxt-link>
             </div>
             <button
-                v-if="jobSearchStore.results.pagination && jobSearchStore.page < jobSearchStore.results.pagination.total_pages"
+                v-if="
+                    jobSearchStore.results.pagination &&
+                    jobSearchStore.page < jobSearchStore.results.pagination.total_pages
+                "
                 @click="loadMore"
                 :disabled="jobSearchStore.isLoading"
                 class="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"

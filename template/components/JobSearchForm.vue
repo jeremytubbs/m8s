@@ -99,12 +99,16 @@ function handleSearch() {
 }
 
 function updateRoute() {
-    router.push({
-        path: "/",
-        query: {
-            q: searchQuery.value,
-            location: locationQuery.value,
-        },
+    const query = {}
+    if (searchQuery.value) {
+        query.q = searchQuery.value
+    }
+    if (locationQuery.value) {
+        query.location = locationQuery.value
+    }
+    router.replace({
+        path: "/jobs/",
+        query,
     })
 }
 

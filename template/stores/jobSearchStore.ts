@@ -13,12 +13,9 @@ interface JobSearchState {
     q: string
     location: string
     results: any[]
-    filters: Filters
     initialAllResults: any[]
-    initialAllTotalPages: number
     hasPerformedInitialSearch: boolean
     page: number
-    totalPages: number
     isLoading: boolean
     lastClickedJobGuid: string | null
 }
@@ -28,12 +25,9 @@ export const useJobSearchStore = defineStore("jobSearch", {
         q: "",
         location: "",
         results: [],
-        filters: {},
         initialAllResults: [],
-        initialAllTotalPages: 1,
         hasPerformedInitialSearch: false,
         page: 1,
-        totalPages: 1,
         isLoading: false,
         lastClickedJobGuid: null,
     }),
@@ -46,11 +40,10 @@ export const useJobSearchStore = defineStore("jobSearch", {
             this.location = location
         },
         setResults(results: any[]) {
-            this.results = results.jobs
-            this.totalPages = results.pagination.total_pages
+            this.results = results
         },
         incrementPage() {
-            if (this.page < this.totalPages) {
+            if (this.page < this.results?.pagination?.total_pages) {
                 this.page++
             }
         },
@@ -64,16 +57,15 @@ export const useJobSearchStore = defineStore("jobSearch", {
                     this.q === "" &&
                     this.location === "" &&
                     this.page === 1 &&
-                    this.initialAllResults.length > 0 &&
+                    this.initialAllResults?.jobs?.length > 0 &&
                     !forceSearch
                 ) {
                     this.results = this.initialAllResults
-                    this.totalPages = this.initialAllTotalPages
                     return
                 }
 
                 // If search params haven't changed and it's not a forced search, don't perform a new search
-                if (!forceSearch && this.page >= 1 && this.results.length > 0) {
+                if (this.hasPerformedInitialSearch && !forceSearch && this.page >= 1 && this.results?.jobs?.length > 0) {
                     return
                 }
 
@@ -94,14 +86,12 @@ export const useJobSearchStore = defineStore("jobSearch", {
                 if (this.page === 1) {
                     this.setResults(data)
                 } else {
-                    this.results = [...this.results, ...data.jobs]
-                    // this.totalPages = data.pagination.total_pages
+                    this.results.jobs = [...this.results.jobs, ...data.jobs]
                 }
 
                 // If this was an "all jobs" search, save the results and mark that we've performed the initial search
                 if (this.q === "" && this.location === "" && !this.hasPerformedInitialSearch) {
-                    this.initialAllResults = this.results
-                    this.initialAllTotalPages = this.totalPages
+                    this.initialAllResults = {...this.results}
                     this.hasPerformedInitialSearch = true
                 }
             } catch (error) {
@@ -112,10 +102,10 @@ export const useJobSearchStore = defineStore("jobSearch", {
         },
         async loadMore() {
             this.incrementPage()
-            const currentResultsCount = this.results.length
+            const currentResultsCount = this.results?.jobs.length
             await this.performSearch(true)
-            if (this.results.length > currentResultsCount) {
-                return this.results[currentResultsCount].guid
+            if (this.results?.jobs.length > currentResultsCount) {
+                return this.results?.jobs[currentResultsCount].guid
             }
             return null
         },

@@ -9,11 +9,20 @@ interface FilterItem {
 interface Filters {
     [key: string]: FilterItem[]
 }
+
+interface SearchResponse {
+    filters: Filters
+    jobs: any[]
+    pagination: {
+        total_pages: number
+    }
+}
+
 interface JobSearchState {
     q: string
     location: string
-    results: any[]
-    initialAllResults: any[]
+    results: SearchResponse
+    initialAllResults: SearchResponse
     hasPerformedInitialSearch: boolean
     page: number
     isLoading: boolean
@@ -24,8 +33,20 @@ export const useJobSearchStore = defineStore("jobSearch", {
     state: (): JobSearchState => ({
         q: "",
         location: "",
-        results: [],
-        initialAllResults: [],
+        results: {
+            filters: {},
+            jobs: [],
+            pagination: {
+                total_pages: 0,
+            },
+        },
+        initialAllResults: {
+            filters: {},
+            jobs: [],
+            pagination: {
+                total_pages: 0,
+            },
+        },
         hasPerformedInitialSearch: false,
         page: 1,
         isLoading: false,
@@ -39,7 +60,7 @@ export const useJobSearchStore = defineStore("jobSearch", {
             this.q = q
             this.location = location
         },
-        setResults(results: any[]) {
+        setResults(results: SearchResponse) {
             this.results = results
         },
         incrementPage() {

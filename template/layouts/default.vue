@@ -1,9 +1,10 @@
 <template>
     <div class="flex flex-col min-h-screen bg-gray-100">
         <!-- Header -->
-        <header class="bg-white shadow-sm">
+        <header class="bg-header shadow-sm">
             <div class="container mx-auto px-4 py-4">
-                <img src="https://placehold.co/200x80" alt="Logo" class="mx-auto h-20 w-auto" />
+                <h1 class="hidden">{{company}} Jobs</h1>
+                <img src="https://placehold.co/200x80" :alt="`${company} logo`" class="mx-auto h-20 w-auto" />
             </div>
         </header>
 
@@ -14,7 +15,7 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white">
+        <footer class="bg-gray-800 text-white text-sm">
             <div class="container mx-auto px-4 py-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <p>&copy; 2024 Your Company Name. All rights reserved.</p>
@@ -31,4 +32,6 @@
     </div>
 </template>
 
-<script setup></script>
+<script setup>
+const {company} = useAppConfig()
+</script>

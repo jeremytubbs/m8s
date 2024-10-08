@@ -1,31 +1,35 @@
 <template>
-    <div>
-        <div v-if="jobSearchStore.results.jobs && jobSearchStore.results.jobs.length > 0">
-            <!-- Display your search results here -->
-            <div v-for="job in jobSearchStore.results.jobs" :key="job.guid" :ref="setJobRef">
-                <nuxt-link
-                    :to="`${buildJobDetailUrl(job)}`"
-                    :id="`job-link-${job.guid}`"
-                    @click="handleJobClick(job)"
-                >
-                    {{ job.title_exact }}
-                </nuxt-link>
-            </div>
-            <button
-                v-if="
-                    jobSearchStore.results.pagination &&
-                    jobSearchStore.page < jobSearchStore.results.pagination.total_pages
-                "
-                @click="loadMore"
-                :disabled="jobSearchStore.isLoading"
-                class="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
-            >
-                {{ jobSearchStore.isLoading ? "Loading..." : "Load More" }}
-            </button>
-        </div>
-        <div v-else-if="searched">No results found.</div>
-        <div v-else>Loading...</div>
+    <div class="flex gap-2">
+        <span class="text-lg font-semibold">Acitve Filters</span>
+        <AppChip>
+            <nuxt-link to="/jobs/">Clear all</nuxt-link>
+        </AppChip>
     </div>
+    <div v-if="jobSearchStore.results.jobs && jobSearchStore.results.jobs.length > 0">
+        <!-- Display your search results here -->
+        <div v-for="job in jobSearchStore.results.jobs" :key="job.guid" :ref="setJobRef">
+            <nuxt-link
+                :to="`${buildJobDetailUrl(job)}`"
+                :id="`job-link-${job.guid}`"
+                @click="handleJobClick(job)"
+            >
+                {{ job.title_exact }}
+            </nuxt-link>
+        </div>
+        <button
+            v-if="
+                jobSearchStore.results.pagination &&
+                jobSearchStore.page < jobSearchStore.results.pagination.total_pages
+            "
+            @click="loadMore"
+            :disabled="jobSearchStore.isLoading"
+            class="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors"
+        >
+            {{ jobSearchStore.isLoading ? "Loading..." : "Load More" }}
+        </button>
+    </div>
+    <div v-else-if="searched">No results found.</div>
+    <div v-else>Loading...</div>
 </template>
 
 <script setup lang="ts">

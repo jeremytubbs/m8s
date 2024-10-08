@@ -4,6 +4,9 @@ export default {
     googleAnalytics: [], // ex. [{id: ""}]
     poweredByDE: true,
     EEOLink: true,
+    backgroundColor: "#db0109",
+    fontColor: "#fff",
+    primaryColor: "#db0109",
     careerSiteUrl: "https://openresty.dejobs.org/",
     logoUrl: "https://seo.nlx.org/dejobsnetwork/DEjobs-red.png",
     privacyUrl: "https://recruitrooster.com/privacy-terms/",
